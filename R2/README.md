@@ -82,6 +82,14 @@ ros2 launch mecanumbot_bringup joy_teleop.launch.py
 - Uses ODE physics engine with 0.01s time step
 - All resource URIs use `package://` scheme for cross-platform compatibility
 
+Khusus gw (wafdan) yg distrobox
+```
+source ~/R2_Heroes_ws/R2/install/setup.bash
+export LIBGL_ALWAYS_SOFTWARE=1
+export IGN_GAZEBO_RESOURCE_PATH=$IGN_GAZEBO_RESOURCE_PATH:$(pwd)/install/mecanumbot_description/share
+ros2 launch mecanumbot_bringup gazebo.launch.py
+```
+
 ## License
 
 Apache 2.0

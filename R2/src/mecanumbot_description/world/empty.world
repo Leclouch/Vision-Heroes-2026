@@ -38,5 +38,11 @@
                 </visual>
             </link>
         </model>
+
+        <include>
+            <uri>model://apriltag_box</uri>
+            <name>apriltag_box_1</name>
+            <pose>5 5 2 0 0 0</pose>
+        </include>
     </world>
 </sdf> 
