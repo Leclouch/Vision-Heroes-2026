@@ -90,7 +90,7 @@ return_type MecanumbotSerialPort::close()
 return_type MecanumbotSerialPort::read_frames(std::vector<SerialHdlcFrame>& frames)
 {
     // Read data from the serial port
-    const ssize_t num_bytes = ::read(serial_port_, rx_buffer_, 256);
+    const ssize_t num_bytes = ::read(serial_port_, rx_buffer_, MECANUMBOT_SERIAL_BUFFER_MAX_SIZE);
     if (num_bytes == -1) {
         RCLCPP_ERROR(rclcpp::get_logger("MecanumbotSerialPort"), "Failed to read serial port data: %s (%d)", strerror(errno), errno);
         return return_type::ERROR;

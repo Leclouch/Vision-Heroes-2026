@@ -25,7 +25,7 @@ sudo apt install ros-humble-desktop ros-humble-gazebo-* ros-humble-controller-ma
 
 1. **Clone and navigate to workspace:**
 ```bash
-cd ~/mecanum_ws-main
+cd ~/R2
 ```
 
 2. **Install dependencies:**

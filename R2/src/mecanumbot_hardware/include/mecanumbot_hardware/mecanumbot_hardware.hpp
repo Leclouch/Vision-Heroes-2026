@@ -4,7 +4,6 @@
 
 //#include <hardware_interface/base_interface.hpp>
 #include <hardware_interface/system_interface.hpp>
-#include <hardware_interface/visibility_control.h>
 #include <rclcpp/macros.hpp>
 #include <vector>
 
