@@ -1,0 +1,42 @@
+<?xml version="1.0" ?>
+<sdf version="1.7">
+    <world name="empty_world">
+        <physics type="ode">
+            <max_step_size>0.01</max_step_size>
+        </physics>
+        <light type="directional" name="sun">
+            <cast_shadows>true</cast_shadows>
+            <pose>0 0 10 0 0 0</pose>
+            <diffuse>0.8 0.8 0.8 1</diffuse>
+            <specular>0.2 0.2 0.2 1</specular>
+            <attenuation>
+                <range>1000</range>
+                <constant>0.9</constant>
+                <linear>0.01</linear>
+                <quadratic>0.001</quadratic>
+            </attenuation>
+            <direction>-0.5 0.1 -0.9</direction>
+        </light>
+        
+        <model name="robocon_map">
+            <static>true</static>
+            <pose>0 0 0.5 0 0 0</pose>
+            <link name="link">
+                <collision name="collision">
+                    <geometry>
+                        <mesh>
+                            <uri>package://mecanumbot_description/models/robocon.dae</uri>
+                        </mesh>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <mesh>
+                            <uri>package://mecanumbot_description/models/robocon.dae</uri>
+                        </mesh>
+                    </geometry>
+                </visual>
+            </link>
+        </model>
+    </world>
+</sdf> 
