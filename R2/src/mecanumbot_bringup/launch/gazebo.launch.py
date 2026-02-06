@@ -113,5 +113,14 @@ def generate_launch_description():
             spawn_robot,
             spawn_joint_state_broadcaster,
             spawn_mecanumbot_drive_controller,
+            Node(
+                package='ros_gz_bridge',
+                executable='parameter_bridge',
+                arguments=[
+                    '/world/empty_world/model/mecanumbot/link/camera_link/sensor/camera/image@sensor_msgs/msg/Image[gz.msgs.Image',
+                    '/camera/image_raw@sensor_msgs/msg/Image[gz.msgs.Image',
+                ],
+                output='screen'
+            ),
         ]
     )
