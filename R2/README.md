@@ -24,21 +24,25 @@ sudo apt install ros-humble-desktop ros-humble-gazebo-* ros-humble-controller-ma
 ## Setup
 
 1. **Clone and navigate to workspace:**
+
 ```bash
 cd ~/R2
 ```
 
-2. **Install dependencies:**
+1. **Install dependencies:**
+
 ```bash
 rosdep install --from-paths src --ignore-src -r -y
 ```
 
-3. **Build the workspace:**
+1. **Build the workspace:**
+
 ```bash
 colcon build
 ```
 
-4. **Source the setup script:**
+1. **Source the setup script:**
+
 ```bash
 source install/setup.bash
 ```
@@ -52,6 +56,7 @@ ros2 launch mecanumbot_bringup gazebo.launch.py
 ```
 
 This will:
+
 - Start Gazebo with the empty world
 - Spawn the Mecanum robot at position (3, 3, 1.0)
 - Initialize the joint state broadcaster
@@ -63,10 +68,16 @@ This will:
 ros2 launch mecanumbot_bringup rviz2.py
 ```
 
-### Teleoperation with Joystick
+### Teleoperation with Joystick/Keyboard
 
 ```bash
 ros2 launch mecanumbot_bringup joy_teleop.launch.py
+```
+
+### View Camera Image
+
+```bash
+ros2 run rqt_image_view rqt_image_view
 ```
 
 ## Features
@@ -75,6 +86,7 @@ ros2 launch mecanumbot_bringup joy_teleop.launch.py
 - **Controller Stack** - Uses ROS2 control framework for modular control
 - **Simulation Ready** - Full Gazebo integration with proper resource URIs
 - **Teleoperation** - Joystick-based remote control
+- **Camera** - Camera with image publishing
 
 ## Notes
 
@@ -83,7 +95,10 @@ ros2 launch mecanumbot_bringup joy_teleop.launch.py
 - All resource URIs use `package://` scheme for cross-platform compatibility
 
 Khusus gw (wafdan) yg distrobox
+
 ```
+
+export IGN_GAZEBO_RESOURCE
 source ~/R2_Heroes_ws/R2/install/setup.bash
 export LIBGL_ALWAYS_SOFTWARE=1
 export IGN_GAZEBO_RESOURCE_PATH=$IGN_GAZEBO_RESOURCE_PATH:$(pwd)/install/mecanumbot_description/share
