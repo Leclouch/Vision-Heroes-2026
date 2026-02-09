@@ -14,19 +14,6 @@ def generate_launch_description():
     mecanum_bot_description_path = get_package_share_directory("mecanumbot_description")
     mecanum_bot_description_prefix = get_package_prefix("mecanumbot_description")
     
-    # Set up Gazebo resource path for meshes
-    gazebo_resource_path = os.path.join(mecanum_bot_description_path, 'meshes')
-    if 'GZ_SIM_RESOURCE_PATH' in os.environ:
-        os.environ['GZ_SIM_RESOURCE_PATH'] = gazebo_resource_path + pathsep + os.environ['GZ_SIM_RESOURCE_PATH']
-    else:
-        os.environ['GZ_SIM_RESOURCE_PATH'] = gazebo_resource_path
-    
-    # Also set IGN_GAZEBO_RESOURCE_PATH for compatibility
-    if 'IGN_GAZEBO_RESOURCE_PATH' in os.environ:
-        os.environ['IGN_GAZEBO_RESOURCE_PATH'] = mecanum_bot_description_path + pathsep + os.environ['IGN_GAZEBO_RESOURCE_PATH']
-    else:
-        os.environ['IGN_GAZEBO_RESOURCE_PATH'] = mecanum_bot_description_path
-    
     # Get the launch configuration
     use_sim_time = LaunchConfiguration("use_sim_time", default="true")
 
@@ -97,12 +84,23 @@ def generate_launch_description():
         output="screen",
     )
 
+    # Resource paths
+    current_gz_resource_path = os.environ.get('GZ_SIM_RESOURCE_PATH', '')
+    current_ign_resource_path = os.environ.get('IGN_GAZEBO_RESOURCE_PATH', '')
+    
+    extra_resource_paths = [
+        os.path.join(mecanum_bot_description_prefix, 'share'),
+        os.path.join(mecanum_bot_description_path, 'models'),
+        os.path.join(mecanum_bot_description_path, 'meshes'),
+    ]
+    
+    new_gz_resource_path = ":".join(extra_resource_paths) + (":" + current_gz_resource_path if current_gz_resource_path else "")
+    new_ign_resource_path = ":".join(extra_resource_paths) + (":" + current_ign_resource_path if current_ign_resource_path else "")
+
     return LaunchDescription(
         [
-            SetEnvironmentVariable(
-                name='GZ_SIM_RESOURCE_PATH',
-                value=os.path.join(mecanum_bot_description_path, 'models')
-            ),
+            SetEnvironmentVariable(name='GZ_SIM_RESOURCE_PATH', value=new_gz_resource_path),
+            SetEnvironmentVariable(name='IGN_GAZEBO_RESOURCE_PATH', value=new_ign_resource_path),
             DeclareLaunchArgument(
                 "use_sim_time",
                 default_value="true",
@@ -119,6 +117,8 @@ def generate_launch_description():
                 arguments=[
                     '/world/empty_world/model/mecanumbot/link/camera_link/sensor/camera/image@sensor_msgs/msg/Image[gz.msgs.Image',
                     '/camera/image_raw@sensor_msgs/msg/Image[gz.msgs.Image',
+                    '/world/empty_world/model/mecanumbot/link/camera_link/sensor/camera/camera_info@sensor_msgs/msg/CameraInfo[gz.msgs.CameraInfo',
+                    '/camera/camera_info@sensor_msgs/msg/CameraInfo[gz.msgs.CameraInfo',
                 ],
                 output='screen'
             ),
