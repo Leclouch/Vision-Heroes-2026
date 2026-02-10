@@ -28,6 +28,7 @@ install(
   PROGRAMS
     scripts/simple_teleop.py
     scripts/joy_teleop.py
+    scripts/rbot_mover.py
   DESTINATION lib/${PROJECT_NAME}
 )
 

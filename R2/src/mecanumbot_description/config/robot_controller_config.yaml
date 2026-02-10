@@ -10,10 +10,10 @@ controller_manager:
 
 mecanumbot_drive_controller:
   ros__parameters:
-    fl_wheel_joint_name: fl_wheel_joint
-    fr_wheel_joint_name: fr_wheel_joint
-    rl_wheel_joint_name: rl_wheel_joint
-    rr_wheel_joint_name: rr_wheel_joint
+    fl_wheel_joint_name: FL_wheel_joint
+    fr_wheel_joint_name: FR_wheel_joint
+    rl_wheel_joint_name: RL_wheel_joint
+    rr_wheel_joint_name: RR_wheel_joint
     wheel_radius: 0.03
     wheel_distance:
       width: 0.46

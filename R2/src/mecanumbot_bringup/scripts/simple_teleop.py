@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 
 import sys
 import threading
@@ -7,7 +7,7 @@ import geometry_msgs.msg
 import rclpy
 from rclpy.node import Node
 
-if sys.platform == 'win32':
+if sys.platform == "win32":
     import msvcrt
 else:
     import termios
@@ -42,38 +42,38 @@ CTRL-C to quit
 """
 
 moveBindings = {
-    'i': (1, 0, 0, 0),
-    'o': (1, 0, 0, -1),
-    'j': (0, 0, 0, 1),
-    'l': (0, 0, 0, -1),
-    'u': (1, 0, 0, 1),
-    ',': (-1, 0, 0, 0),
-    '.': (-1, 0, 0, 1),
-    'm': (-1, 0, 0, -1),
-    'O': (1, -1, 0, 0),
-    'I': (1, 0, 0, 0),
-    'J': (0, 1, 0, 0),
-    'L': (0, -1, 0, 0),
-    'U': (1, 1, 0, 0),
-    '<': (-1, 0, 0, 0),
-    '>': (-1, -1, 0, 0),
-    'M': (-1, 1, 0, 0),
-    't': (0, 0, 1, 0),
-    'b': (0, 0, -1, 0),
+    "i": (1, 0, 0, 0),
+    "o": (1, 0, 0, -1),
+    "j": (0, 0, 0, 1),
+    "l": (0, 0, 0, -1),
+    "u": (1, 0, 0, 1),
+    ",": (-1, 0, 0, 0),
+    ".": (-1, 0, 0, 1),
+    "m": (-1, 0, 0, -1),
+    "O": (1, -1, 0, 0),
+    "I": (1, 0, 0, 0),
+    "J": (0, 1, 0, 0),
+    "L": (0, -1, 0, 0),
+    "U": (1, 1, 0, 0),
+    "<": (-1, 0, 0, 0),
+    ">": (-1, -1, 0, 0),
+    "M": (-1, 1, 0, 0),
+    "t": (0, 0, 1, 0),
+    "b": (0, 0, -1, 0),
 }
 
 speedBindings = {
-    'q': (1.1, 1.1),
-    'z': (.9, .9),
-    'w': (1.1, 1),
-    'x': (.9, 1),
-    'e': (1, 1.1),
-    'c': (1, .9),
+    "q": (1.1, 1.1),
+    "z": (0.9, 0.9),
+    "w": (1.1, 1),
+    "x": (0.9, 1),
+    "e": (1, 1.1),
+    "c": (1, 0.9),
 }
 
 
 def getKey(settings):
-    if sys.platform == 'win32':
+    if sys.platform == "win32":
         # getwch() returns a string on Python 3.x on Windows
         key = msvcrt.getwch()
     else:
@@ -85,19 +85,19 @@ def getKey(settings):
 
 
 def saveTerminalSettings():
-    if sys.platform == 'win32':
+    if sys.platform == "win32":
         return None
     return termios.tcgetattr(sys.stdin)
 
 
 def restoreTerminalSettings(old_settings):
-    if sys.platform == 'win32':
+    if sys.platform == "win32":
         return
     termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
 
 
 def vels(speed, turn):
-    return 'currently:\tspeed %s\tturn %s ' % (speed, turn)
+    return "currently:\tspeed %s\tturn %s " % (speed, turn)
 
 
 def main():
@@ -105,8 +105,8 @@ def main():
 
     rclpy.init()
 
-    node = rclpy.create_node('teleop_twist_keyboard')
-    pub = node.create_publisher(geometry_msgs.msg.TwistStamped, '/cmd_vel', 10)
+    node = rclpy.create_node("teleop_twist_keyboard")
+    pub = node.create_publisher(geometry_msgs.msg.TwistStamped, "/cmd_vel", 10)
 
     speed = 0.5
     turn = 1.0
@@ -131,7 +131,7 @@ def main():
                 turn = turn * speedBindings[key][1]
 
                 print(vels(speed, turn))
-                if (status == 14):
+                if status == 14:
                     print(msg)
                 status = (status + 1) % 15
             else:
@@ -139,12 +139,12 @@ def main():
                 y = 0.0
                 z = 0.0
                 th = 0.0
-                if (key == '\x03'):
+                if key == "\x03":
                     break
 
             twist_msg = geometry_msgs.msg.TwistStamped()
             twist_msg.header.stamp = node.get_clock().now().to_msg()
-            twist_msg.header.frame_id = 'base_link'
+            twist_msg.header.frame_id = "base_link"
             twist_msg.twist.linear.x = x * speed
             twist_msg.twist.linear.y = y * speed
             twist_msg.twist.linear.z = z * speed
@@ -159,7 +159,7 @@ def main():
     finally:
         twist_msg = geometry_msgs.msg.TwistStamped()
         twist_msg.header.stamp = node.get_clock().now().to_msg()
-        twist_msg.header.frame_id = 'base_link'
+        twist_msg.header.frame_id = "base_link"
         twist_msg.twist.linear.x = 0.0
         twist_msg.twist.linear.y = 0.0
         twist_msg.twist.linear.z = 0.0
@@ -171,5 +171,5 @@ def main():
         restoreTerminalSettings(settings)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
