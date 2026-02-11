@@ -154,17 +154,17 @@ def generate_launch_description():
 
     # 8. Robot Mover Node (publishes cmd_vel to move robot)
     # Delay 8 seconds to ensure controller is fully active
-    rbot_mover = TimerAction(
-        period=8.0,
-        actions=[
-            Node(
-                package="mecanumbot_bringup",
-                executable="rbot_mover.py",
-                output="screen",
-                parameters=[{"use_sim_time": LaunchConfiguration("use_sim_time")}],
-            )
-        ],
-    )
+    # rbot_mover = TimerAction(
+    #     period=8.0,
+    #     actions=[
+    #         Node(
+    #             package="mecanumbot_bringup",
+    #             executable="rbot_mover.py",
+    #             output="screen",
+    #             parameters=[{"use_sim_time": LaunchConfiguration("use_sim_time")}],
+    #         )
+    #     ],
+    # )
 
     # Event Handlers to ensure order
     # Generate -> Sed -> Spawn
@@ -195,6 +195,6 @@ def generate_launch_description():
             bridge,
             spawn_joint_state_broadcaster,
             spawn_mecanumbot_drive_controller,
-            rbot_mover,
+            # rbot_mover,
         ]
     )

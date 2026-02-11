@@ -29,6 +29,8 @@ install(
     scripts/simple_teleop.py
     scripts/joy_teleop.py
     scripts/rbot_mover.py
+    scripts/keyboard_teleop.py
+    scripts/keyboard_test.py
   DESTINATION lib/${PROJECT_NAME}
 )
 
