@@ -1,19 +1,11 @@
 apriltag:
   ros__parameters:
-    # The family of tags to be detected. Options: [tag36h11, tag25h9, tag16h5, tagCircle21h7, tagCircle49h12, tagStandard41h12, tagStandard52h13, tagCustom48h12]
-    tag_family: "tag36h11"
-    # Size of the tag in meters. (Important: measure your tag carefully)
-    tag_size: 0.20
-    # Max number of detections to report (0 for unlimited)
-    max_detections: 10
-    # Enable tag ID filtering
-    # tag_ids: []
-    # If tag_ids is not empty, only these tags will be reported. Example: [1, 2, 3]
-    # tag_ids: [1, 2, 3]
+    # Corrected parameter names found via ros2 param list
+    family: "36h11"
+    size: 0.145
     
-    # Optional parameters (defaults shown)
-    # tag_threads: 1
-    # tag_decimate: 1.0
-    # tag_blur: 0.0
-    # tag_refine_edges: 1
-    # tag_debug: 0
+    tag:
+      ids: [0, 1, 2, 3]
+      sizes: [0.16, 0.16, 0.16, 0.16]
+    
+    max_detections: 10

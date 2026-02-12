@@ -62,9 +62,10 @@ def generate_launch_description():
             '-topic', 'robot_description',
             '-name', 'mecanumbot',
             '-allow_renaming', 'true',
-            '-x', '3',
-            '-y', '3',
-            '-z', '1.0'
+            '-x', '2',
+            '-y', '5',
+            '-z', '2.0',
+            '-Y', '3.14159'
         ],
         output='screen'
     )

@@ -11,7 +11,10 @@ def generate_launch_description():
         package='apriltag_ros',
         executable='apriltag_node',
         name='apriltag',
-        parameters=[config_file],
+        parameters=[
+            config_file,
+            {'size': 0.145}
+        ],
         remappings=[
             ('image_rect', '/camera/image_raw'),
             ('camera_info', '/camera/camera_info'),
