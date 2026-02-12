@@ -10,83 +10,61 @@ A ROS2-based control system for a Mecanum wheel robot with Gazebo simulation sup
 - **mecanumbot_hardware** - Hardware interface for motor control
 - **mecanumbot_control** - Controller manager configuration
 - **mecanumbot_teleop** - Joystick teleoperation node
+- **mecanumbot_apriltag** - AprilTag distance calculation node
+- **mecanumbot_tag_follower** - Node for following tags at a specific distance
 
 ## Prerequisites
 
-- ROS2 Humble or later
-- Gazebo (Ignition)
-- colcon build tools
+...
 
-```bash
-sudo apt install ros-humble-desktop ros-humble-gazebo-* ros-humble-controller-manager
-```
-
-## Setup
-
-1. **Clone and navigate to workspace:**
-```bash
-cd ~/R2
-```
-
-2. **Install dependencies:**
-```bash
-rosdep install --from-paths src --ignore-src -r -y
-```
-
-3. **Build the workspace:**
-```bash
-colcon build
-```
-
-4. **Source the setup script:**
-```bash
-source install/setup.bash
-```
+- [apriltag_msgs](https://github.com/christianrauch/apriltag_msgs)
+- [apriltag_ros](https://github.com/christianrauch/apriltag_ros)
 
 ## Usage
 
-### Launch Robot in Gazebo Simulation
+### 1. Launch Robot in Gazebo Simulation
 
 ```bash
 ros2 launch mecanumbot_bringup gazebo.launch.py
 ```
 
-This will:
-- Start Gazebo with the empty world
-- Spawn the Mecanum robot at position (3, 3, 1.0)
-- Initialize the joint state broadcaster
-- Initialize the Mecanum drive controller
-
-### View Robot State with RViz
+### 2. Start AprilTag Detection
 
 ```bash
-ros2 launch mecanumbot_bringup rviz2.py
+ros2 launch mecanumbot_bringup apriltag.launch.py
 ```
 
-### Teleoperation with Joystick
+### 3. Run Distance Calculator
 
 ```bash
-ros2 launch mecanumbot_bringup joy_teleop.launch.py
+ros2 run mecanumbot_apriltag apriltag_distance_node
+```
+
+### 4. Run Tag Follower
+
+```bash
+ros2 run mecanumbot_tag_follower tag_follower_node --ros-args -p target_distance:=1.0
 ```
 
 ## Features
 
-- **Hardware Abstraction** - Clean interface for motor control via ROS2 hardware_interface
-- **Controller Stack** - Uses ROS2 control framework for modular control
-- **Simulation Ready** - Full Gazebo integration with proper resource URIs
-- **Teleoperation** - Joystick-based remote control
+- **AprilTag Tracking** - Accurate distance calculation using TF transforms.
+- **Dynamic Following** - Robot maintains a target distance using a proportional controller.
+- **Hardware Abstraction** - Clean interface for motor control via ROS2 hardware_interface.
+- **Simulation Ready** - Full Gazebo integration with front-facing camera.
 
 ## Notes
 
-- Robot spawns at (x=3, y=3, z=1.0) in the Gazebo world
-- Uses ODE physics engine with 0.01s time step
-- All resource URIs use `package://` scheme for cross-platform compatibility
+- **Camera Calibration**: If the distance is inaccurate, tune the `size` parameter in `apriltag_config.yaml` to match the **black square** portion of your tag.
+- **Front Camera**: The camera is mounted on the front (`+0.12m`). The robot spawns facing the tag at Yaw 0.
 
-Khusus gw (wafdan) yg distrobox
-```
-source ~/R2_Heroes_ws/R2/install/setup.bash
+## Distrobox (wafdan)
+
+```bash
+distrobox enter ros2-humble
+cd ~/R2_Heroes_ws/R2
+source install/setup.bash
 export LIBGL_ALWAYS_SOFTWARE=1
-export IGN_GAZEBO_RESOURCE_PATH=$IGN_GAZEBO_RESOURCE_PATH:$(pwd)/install/mecanumbot_description/share
 ros2 launch mecanumbot_bringup gazebo.launch.py
 ```
 
