@@ -31,7 +31,7 @@ class JoyTeleop(Node):
         self.enable_button = self.get_parameter("enable_button").value
         self.require_enable_button = self.get_parameter("require_enable_button").value
 
-        # Publishers and Subscribers
+        # Publishers and Subscribers - using TwistStamped
         self.publisher_ = self.create_publisher(TwistStamped, "/cmd_vel", 10)
         self.subscription = self.create_subscription(Joy, "/joy", self.joy_callback, 10)
 
@@ -39,11 +39,12 @@ class JoyTeleop(Node):
         self.get_logger().info(
             f"Mapping: LinX={self.axis_linear_x}, LinY={self.axis_linear_y}, AngZ={self.axis_angular}"
         )
+        self.get_logger().info("Publishing to /cmd_vel (geometry_msgs/TwistStamped)")
 
     def joy_callback(self, msg):
-        twist = TwistStamped()
-        twist.header.stamp = self.get_clock().now().to_msg()
-        twist.header.frame_id = "base_link"
+        twist_stamped = TwistStamped()
+        twist_stamped.header.stamp = self.get_clock().now().to_msg()
+        twist_stamped.header.frame_id = "base_link"
 
         # Check enable button if required
         if self.require_enable_button:
@@ -52,25 +53,28 @@ class JoyTeleop(Node):
                 or msg.buttons[self.enable_button] == 0
             ):
                 # Stop if button not pressed
-                self.publisher_.publish(twist)
+                self.publisher_.publish(twist_stamped)
                 return
 
         # Read Joystick Axes
         # Ensure axis indices are valid
         if self.axis_linear_x < len(msg.axes):
-            twist.twist.linear.x = msg.axes[self.axis_linear_x] * self.scale_linear
+            twist_stamped.twist.linear.x = (
+                msg.axes[self.axis_linear_x] * self.scale_linear
+            )
 
         if self.axis_linear_y < len(msg.axes):
-            # Often joystick left/right is inverted for Y coordinate, check this.
-            # Standard: Left is positive usually? No, Left is +1 on many axes[0].
-            # ROS coordinate: Y is Left.
-            # So if Stick Left -> +1, then it matches.
-            twist.twist.linear.y = msg.axes[self.axis_linear_y] * self.scale_linear
+            # Mecanum drive supports lateral movement
+            twist_stamped.twist.linear.y = (
+                msg.axes[self.axis_linear_y] * self.scale_linear
+            )
 
         if self.axis_angular < len(msg.axes):
-            twist.twist.angular.z = msg.axes[self.axis_angular] * self.scale_angular
+            twist_stamped.twist.angular.z = (
+                msg.axes[self.axis_angular] * self.scale_angular
+            )
 
-        self.publisher_.publish(twist)
+        self.publisher_.publish(twist_stamped)
 
 
 def main(args=None):

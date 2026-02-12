@@ -1,0 +1,21 @@
+controller_manager:
+  ros__parameters:
+    update_rate: 50  # Hz
+
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+    mecanumbot_drive_controller:
+      type: mecanumbot_controller/MecanumbotDriveController
+
+mecanumbot_drive_controller:
+  ros__parameters:
+    fl_wheel_joint_name: front_left_wheel_joint
+    fr_wheel_joint_name: front_right_wheel_joint
+    rl_wheel_joint_name: back_left_wheel_joint
+    rr_wheel_joint_name: back_right_wheel_joint
+    
+    wheel_radius: 0.0325  # Wheel radius in meters
+    wheel_distance:
+      width: 0.199   # Distance between left and right wheels (m)
+      length: 0.238  # Distance between front and rear wheels (m)
