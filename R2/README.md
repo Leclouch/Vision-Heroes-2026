@@ -1,72 +1,108 @@
-# Mecanum Bot ROS2
+# Mecanum Bot ROS 2
 
-A ROS2-based control system for a Mecanum wheel robot with Gazebo simulation support.
+A modular ROS 2-based control system for a Mecanum wheel robot featuring AprilTag tracking and autonomous following using Gazebo simulation.
 
-## Project Structure
+## 🏗 System Architecture
 
-- **mecanumbot_bringup** - Launch files for starting the robot system
-- **mecanumbot_description** - Robot URDF models, meshes, and Gazebo world files
-- **mecanumbot_controller** - Custom Mecanum drive controller plugin
-- **mecanumbot_hardware** - Hardware interface for motor control
-- **mecanumbot_control** - Controller manager configuration
-- **mecanumbot_teleop** - Joystick teleoperation node
-- **mecanumbot_apriltag** - AprilTag distance calculation node
-- **mecanumbot_tag_follower** - Node for following tags at a specific distance
+The project follows a decoupled architecture where detection and control are separated:
 
-## Prerequisites
+1. **Distance & Yaw Calculator** (`mecanumbot_apriltag`):
+    * Processes raw AprilTag detections.
+    * Calculates Euclidean distance and Yaw relative to the camera.
+    * Publishes data to the `/tag_info` topic (`PointStamped`).
+2. **Tag Follower** (`mecanumbot_tag_follower`):
+    * Subscribes to `/tag_info`.
+    * Implements the following logic: **Move forward if distance > 1.0m, else stop.**
 
-...
+## 📥 Installation
 
-- [apriltag_msgs](https://github.com/christianrauch/apriltag_msgs)
-- [apriltag_ros](https://github.com/christianrauch/apriltag_ros)
+### 1. Prerequisites
 
-## Usage
+Ensure you have **ROS 2 Humble** installed. If you are using **Distrobox**, refer to the `distrobox.sh` script for the environment setup.
 
-### 1. Launch Robot in Gazebo Simulation
+### 2. Install Dependencies
+
+Run the following commands to install the required ROS 2 packages and system dependencies:
+
+```bash
+# Install ROS 2 dependencies
+sudo apt update
+sudo apt install ros-humble-apriltag-msgs ros-humble-apriltag-ros \
+                 ros-humble-controller-manager ros-humble-hardware-interface \
+                 ros-humble-tf2-ros ros-humble-xacro \
+                 ros-humble-joint-state-broadcaster
+
+# Install additional system dependencies via rosdep
+cd ~/R2_Heroes_ws/R2
+rosdep update
+rosdep install --from-paths src --ignore-src -y
+```
+
+### 3. Build the Workspace
+
+```bash
+colcon build
+source install/setup.bash
+```
+
+## 🚀 Quick Start Guide
+
+Follow these steps in separate terminals (ensure each terminal is sourced: `source install/setup.bash`).
+
+### Step 1: Launch Simulation
+
+Start the robot and the Gazebo world.
 
 ```bash
 ros2 launch mecanumbot_bringup gazebo.launch.py
 ```
 
-### 2. Start AprilTag Detection
+### Step 2: Start Tag Detection
+
+Launches the camera processing pipeline for AprilTags.
 
 ```bash
 ros2 launch mecanumbot_bringup apriltag.launch.py
 ```
 
-### 3. Run Distance Calculator
+### Step 3: Run the Data Calculator
+
+Extracts the ID, Distance, and Yaw from detections.
 
 ```bash
 ros2 run mecanumbot_apriltag apriltag_distance_node
 ```
 
-### 4. Run Tag Follower
+### Step 4: Start the Follower
+
+Makes the robot autonomously follow the tag.
 
 ```bash
-ros2 run mecanumbot_tag_follower tag_follower_node --ros-args -p target_distance:=1.0
+ros2 run mecanumbot_tag_follower tag_follower_node
 ```
 
-## Features
+## 🛠 Advanced Usage
 
-- **AprilTag Tracking** - Accurate distance calculation using TF transforms.
-- **Dynamic Following** - Robot maintains a target distance using a proportional controller.
-- **Hardware Abstraction** - Clean interface for motor control via ROS2 hardware_interface.
-- **Simulation Ready** - Full Gazebo integration with front-facing camera.
+### Monitoring Data
 
-## Notes
-
-- **Camera Calibration**: If the distance is inaccurate, tune the `size` parameter in `apriltag_config.yaml` to match the **black square** portion of your tag.
-- **Front Camera**: The camera is mounted on the front (`+0.12m`). The robot spawns facing the tag at Yaw 0.
-
-## Distrobox (wafdan)
+You can monitor the live tag information (ID, Distance in meters, Yaw in radians) directly from the topic:
 
 ```bash
-distrobox enter ros2-humble
-cd ~/R2_Heroes_ws/R2
-source install/setup.bash
-export LIBGL_ALWAYS_SOFTWARE=1
-ros2 launch mecanumbot_bringup gazebo.launch.py
+ros2 topic echo /tag_info
 ```
+
+### Tuning Parameters
+
+You can override the target distance or speed via CLI:
+
+```bash
+ros2 run mecanumbot_tag_follower tag_follower_node --ros-args -p target_distance:=1.5 -p linear_speed:=0.3
+```
+
+## 📝 Notes
+
+* **Camera Placement**: The camera is mounted at `xyz="-0.12 0.0 0.1"` and rotated 180 degrees (`rpy="0 0 3.14"`) to align with the robot's forward movement.
+* **Simulation Performance**: If you encounter graphics lag in Distrobox, ensure `export LIBGL_ALWAYS_SOFTWARE=1` is set in your environment.
 
 ## License
 
