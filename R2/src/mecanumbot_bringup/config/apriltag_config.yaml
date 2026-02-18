@@ -1,0 +1,11 @@
+apriltag:
+  ros__parameters:
+    # Corrected parameter names found via ros2 param list
+    family: "36h11"
+    size: 0.145
+    
+    tag:
+      ids: [0, 1, 2, 3]
+      sizes: [0.16, 0.16, 0.16, 0.16]
+    
+    max_detections: 10
